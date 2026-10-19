@@ -10,33 +10,154 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AgreementRouteImport } from './routes/agreement'
+import { Route as BackupRouteImport } from './routes/backup'
+import { Route as DataRouteImport } from './routes/data'
+import { Route as ProjectsIndexRouteImport } from './routes/projects.index'
+import { Route as ProjectsNewRouteImport } from './routes/projects.new'
+import { Route as ProjectsIdIndexRouteImport } from './routes/projects.$id.index'
+import { Route as ProjectsIdAgreementRouteImport } from './routes/projects.$id.agreement'
+import { Route as ProjectsIdEditRouteImport } from './routes/projects.$id.edit'
+import { Route as ProjectsIdReportRouteImport } from './routes/projects.$id.report'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AgreementRoute = AgreementRouteImport.update({
+  id: '/agreement',
+  path: '/agreement',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BackupRoute = BackupRouteImport.update({
+  id: '/backup',
+  path: '/backup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DataRoute = DataRouteImport.update({
+  id: '/data',
+  path: '/data',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProjectsIndexRoute = ProjectsIndexRouteImport.update({
+  id: '/projects/',
+  path: '/projects/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProjectsNewRoute = ProjectsNewRouteImport.update({
+  id: '/projects/new',
+  path: '/projects/new',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProjectsIdIndexRoute = ProjectsIdIndexRouteImport.update({
+  id: '/projects/$id/',
+  path: '/projects/$id/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProjectsIdAgreementRoute = ProjectsIdAgreementRouteImport.update({
+  id: '/projects/$id/agreement',
+  path: '/projects/$id/agreement',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProjectsIdEditRoute = ProjectsIdEditRouteImport.update({
+  id: '/projects/$id/edit',
+  path: '/projects/$id/edit',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProjectsIdReportRoute = ProjectsIdReportRouteImport.update({
+  id: '/projects/$id/report',
+  path: '/projects/$id/report',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/agreement': typeof AgreementRoute
+  '/backup': typeof BackupRoute
+  '/data': typeof DataRoute
+  '/projects/new': typeof ProjectsNewRoute
+  '/projects/': typeof ProjectsIndexRoute
+  '/projects/$id/agreement': typeof ProjectsIdAgreementRoute
+  '/projects/$id/edit': typeof ProjectsIdEditRoute
+  '/projects/$id/report': typeof ProjectsIdReportRoute
+  '/projects/$id/': typeof ProjectsIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/agreement': typeof AgreementRoute
+  '/backup': typeof BackupRoute
+  '/data': typeof DataRoute
+  '/projects/new': typeof ProjectsNewRoute
+  '/projects': typeof ProjectsIndexRoute
+  '/projects/$id/agreement': typeof ProjectsIdAgreementRoute
+  '/projects/$id/edit': typeof ProjectsIdEditRoute
+  '/projects/$id/report': typeof ProjectsIdReportRoute
+  '/projects/$id': typeof ProjectsIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/agreement': typeof AgreementRoute
+  '/backup': typeof BackupRoute
+  '/data': typeof DataRoute
+  '/projects/new': typeof ProjectsNewRoute
+  '/projects/': typeof ProjectsIndexRoute
+  '/projects/$id/agreement': typeof ProjectsIdAgreementRoute
+  '/projects/$id/edit': typeof ProjectsIdEditRoute
+  '/projects/$id/report': typeof ProjectsIdReportRoute
+  '/projects/$id/': typeof ProjectsIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/agreement'
+    | '/backup'
+    | '/data'
+    | '/projects/new'
+    | '/projects/'
+    | '/projects/$id/agreement'
+    | '/projects/$id/edit'
+    | '/projects/$id/report'
+    | '/projects/$id/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/agreement'
+    | '/backup'
+    | '/data'
+    | '/projects/new'
+    | '/projects'
+    | '/projects/$id/agreement'
+    | '/projects/$id/edit'
+    | '/projects/$id/report'
+    | '/projects/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/agreement'
+    | '/backup'
+    | '/data'
+    | '/projects/new'
+    | '/projects/'
+    | '/projects/$id/agreement'
+    | '/projects/$id/edit'
+    | '/projects/$id/report'
+    | '/projects/$id/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AgreementRoute: typeof AgreementRoute
+  BackupRoute: typeof BackupRoute
+  DataRoute: typeof DataRoute
+  ProjectsNewRoute: typeof ProjectsNewRoute
+  ProjectsIndexRoute: typeof ProjectsIndexRoute
+  ProjectsIdAgreementRoute: typeof ProjectsIdAgreementRoute
+  ProjectsIdEditRoute: typeof ProjectsIdEditRoute
+  ProjectsIdReportRoute: typeof ProjectsIdReportRoute
+  ProjectsIdIndexRoute: typeof ProjectsIdIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +169,83 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/agreement': {
+      id: '/agreement'
+      path: '/agreement'
+      fullPath: '/agreement'
+      preLoaderRoute: typeof AgreementRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/backup': {
+      id: '/backup'
+      path: '/backup'
+      fullPath: '/backup'
+      preLoaderRoute: typeof BackupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/data': {
+      id: '/data'
+      path: '/data'
+      fullPath: '/data'
+      preLoaderRoute: typeof DataRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/projects/': {
+      id: '/projects/'
+      path: '/projects'
+      fullPath: '/projects/'
+      preLoaderRoute: typeof ProjectsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/projects/new': {
+      id: '/projects/new'
+      path: '/projects/new'
+      fullPath: '/projects/new'
+      preLoaderRoute: typeof ProjectsNewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/projects/$id/': {
+      id: '/projects/$id/'
+      path: '/projects/$id'
+      fullPath: '/projects/$id/'
+      preLoaderRoute: typeof ProjectsIdIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/projects/$id/agreement': {
+      id: '/projects/$id/agreement'
+      path: '/projects/$id/agreement'
+      fullPath: '/projects/$id/agreement'
+      preLoaderRoute: typeof ProjectsIdAgreementRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/projects/$id/edit': {
+      id: '/projects/$id/edit'
+      path: '/projects/$id/edit'
+      fullPath: '/projects/$id/edit'
+      preLoaderRoute: typeof ProjectsIdEditRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/projects/$id/report': {
+      id: '/projects/$id/report'
+      path: '/projects/$id/report'
+      fullPath: '/projects/$id/report'
+      preLoaderRoute: typeof ProjectsIdReportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AgreementRoute: AgreementRoute,
+  BackupRoute: BackupRoute,
+  DataRoute: DataRoute,
+  ProjectsNewRoute: ProjectsNewRoute,
+  ProjectsIndexRoute: ProjectsIndexRoute,
+  ProjectsIdAgreementRoute: ProjectsIdAgreementRoute,
+  ProjectsIdEditRoute: ProjectsIdEditRoute,
+  ProjectsIdReportRoute: ProjectsIdReportRoute,
+  ProjectsIdIndexRoute: ProjectsIdIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

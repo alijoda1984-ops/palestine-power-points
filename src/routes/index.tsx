@@ -1,24 +1,43 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { Shell } from "@/components/Shell";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
 export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: "كيلة الأعمال الكهربائية" },
+      { name: "description", content: "أداة الكهربائي لحساب النقاط وأجرة العمل، وحفظ المشاريع وطباعة الاتفاقيات." },
+      { property: "og:title", content: "كيلة الأعمال الكهربائية" },
+      { property: "og:description", content: "حساب نقاط الأعمال الكهربائية وأجرة العمل." },
+    ],
+  }),
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
+const actions = [
+  { to: "/agreement", label: "اتفاقية عمل", sub: "طباعة اتفاقية لمشروع" },
+  { to: "/projects/new", label: "مشروع جديد", sub: "إنشاء كيلة جديدة" },
+  { to: "/projects", label: "المشاريع المحفوظة", sub: "فتح وتعديل المشاريع" },
+  { to: "/backup", label: "النسخ الاحتياطي", sub: "تصدير واستيراد ملف" },
+] as const;
+
 function Index() {
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
+    <Shell title="كيلة الأعمال الكهربائية" back={false}>
+      <div className="grid gap-3">
+        {actions.map((a) => (
+          <Link key={a.to} to={a.to} className="flex min-h-20 flex-col justify-center rounded-xl border-2 border-foreground bg-background px-5 py-3 active:bg-muted">
+            <span className="text-xl font-bold">{a.label}</span>
+            <span className="text-muted-foreground">{a.sub}</span>
+          </Link>
+        ))}
+        <Link to="/data" className="flex min-h-16 flex-col justify-center rounded-xl border-2 border-dashed border-foreground px-5 py-3">
+          <span className="text-lg font-bold">إدارة بيانات الكتب</span>
+          <span className="text-muted-foreground">استيراد قيم النقاط الموثّقة</span>
+        </Link>
+      </div>
+      <p className="mt-6 text-sm text-muted-foreground">
+        البيانات محفوظة على هذا الجهاز فقط. للتثبيت على الآيفون: افتح رابط التطبيق المنشور (https) في Safari ثم «مشاركة» ← «إضافة إلى الشاشة الرئيسية».
+      </p>
+    </Shell>
   );
 }

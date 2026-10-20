@@ -44,8 +44,11 @@ export function deleteProject(id: string) {
 }
 export const setProjects = (ps: Project[]) => write(PROJECTS_KEY, ps);
 
-export const getCatalog = (m: AgreementMode): Catalog =>
-  read<Catalog | null>(catalogKey(m), null) ?? defaultCatalog(m);
+export const getCatalog = (m: AgreementMode): Catalog => {
+  const c = read<Catalog | null>(catalogKey(m), null);
+  // Old versions shipped sample rows flagged isTest; never show them.
+  return c && !c.isTest ? c : defaultCatalog(m);
+};
 export const saveCatalog = (c: Catalog) => write(catalogKey(c.mode), c);
 export function resetCatalog(m: AgreementMode) {
   localStorage.removeItem(catalogKey(m));

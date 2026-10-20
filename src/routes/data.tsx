@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
-import { ErrorBox, Shell, TestBadge } from "@/components/Shell";
+import { ErrorBox, Shell } from "@/components/Shell";
 import { getCatalog, resetCatalog, saveCatalog, useStore } from "@/lib/storage";
 import { parseCatalogText } from "@/lib/catalog";
 import { MODE_LABEL, RULESET_LABEL, type AgreementMode, type CatalogItem } from "@/lib/types";

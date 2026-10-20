@@ -7,9 +7,16 @@ export const MODE_LABEL: Record<AgreementMode, string> = {
 
 /** Each mode has its own independent ruleset / catalog. They never share values. */
 export const RULESET_LABEL: Record<AgreementMode, string> = {
-  goods: "كتاب النقابة 2018 — عمود النقاط مع البضاعة",
-  manufacturing: "كتاب المصانعة 2025 (منفصل)",
+  goods: "كتاب النقابة — عمود البضاعة (يُدخله المستخدم)",
+  manufacturing: "كتاب النقابة — المصانعة (يُدخله المستخدم، منفصل)",
 };
+
+export const MODE_DESC: Record<AgreementMode, string> = {
+  goods: "الكهربائي يورّد البضاعة (عمود البضاعة في كتاب النقابة). وحدات الإنارة غير مشمولة بمسؤولية الكهربائي عن البضاعة.",
+  manufacturing: "صاحب العمل يورّد المواد ويدفع ثمنها. الكهربائي يتقاضى أجرة العمل فقط.",
+};
+
+export const VERIFY_NOTE = "تنبيه: يجب إدخال قيم النقاط والتحقق منها من كتاب النقابة قبل الاعتماد على أي تقدير حقيقي.";
 
 export interface CatalogItem {
   id: string;

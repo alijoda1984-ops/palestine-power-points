@@ -1,29 +1,17 @@
 import type { AgreementMode, Catalog, CatalogItem } from "./types";
 
 /**
- * SAMPLE TEST ROWS ONLY. These numbers are invented placeholders for trying
- * the app and are NOT union-book values. Replace via the data-management page.
+ * Both catalogs start EMPTY. No union-book codes or point values are shipped.
+ * Official values must be entered by the user from the union-book photos.
  */
-const TEST_GOODS: CatalogItem[] = [
-  { id: "t1", section: "قسم تجريبي أ", code: "TEST-01", name: "بند تجريبي 1", points: 1 },
-  { id: "t2", section: "قسم تجريبي أ", code: "TEST-02", name: "بند تجريبي 2", points: 2 },
-  { id: "t3", section: "قسم تجريبي أ", code: "TEST-03", name: "بند تجريبي 3", points: 0.5 },
-  { id: "t4", section: "قسم تجريبي ب", code: "TEST-04", name: "بند تجريبي 4", points: 3 },
-  { id: "t5", section: "قسم تجريبي ب", code: "TEST-05", name: "بند تجريبي 5", points: 1.5 },
-  { id: "t6", section: "قسم تجريبي ج", code: "TEST-06", name: "بند تجريبي 6", points: 4 },
-];
-
 export function defaultCatalog(mode: AgreementMode): Catalog {
-  if (mode === "goods")
-    return {
-      mode,
-      isTest: true,
-      sourceLabel: "بيانات تجريبية — ليست قيماً رسمية",
-      importedAt: null,
-      items: TEST_GOODS,
-    };
-  // Manufacturing has its own ruleset; nothing until the 2025 book is imported.
-  return { mode, isTest: true, sourceLabel: "لا توجد بيانات — بانتظار كتاب 2025", importedAt: null, items: [] };
+  return {
+    mode,
+    isTest: false,
+    sourceLabel: "فارغ — بانتظار إدخال القيم من صور كتاب النقابة",
+    importedAt: null,
+    items: [],
+  };
 }
 
 export function sections(items: CatalogItem[]): string[] {

@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
-import { ErrorBox, Shell, TestBadge } from "@/components/Shell";
+import { ErrorBox, Shell } from "@/components/Shell";
 import { getCatalog, resetCatalog, saveCatalog, useStore } from "@/lib/storage";
 import { parseCatalogText } from "@/lib/catalog";
 import { MODE_LABEL, RULESET_LABEL, type AgreementMode, type CatalogItem } from "@/lib/types";
@@ -22,7 +22,7 @@ function DataPage() {
   return (
     <Shell title="إدارة بيانات الكتب">
       <div className="mb-4 rounded-xl border-2 border-warning-foreground bg-warning p-3 text-warning-foreground">
-        <b>مهم:</b> لا يحتوي التطبيق على أي قيم رسمية. البنود الموجودة حالياً تجريبية للاختبار فقط. لكل نوع اتفاق جدول مستقل تماماً: «العمل مع بضاعة» يستخدم عمود النقاط مع البضاعة من كتاب 2018، و«المصانعة» ينتظر كتاب 2025 ولا يستخدم قيم 2018.
+        <b>مهم:</b> لا يحتوي التطبيق على أي رموز أو قيم نقاط من كتاب النقابة. القائمتان فارغتان حتى تُدخَل القيم من صور الكتاب. لكل نوع اتفاق قائمة مستقلة تماماً: «العمل مع بضاعة» (عمود البضاعة) و«مصانعة»، ولا تُنقل القيم بينهما.
       </div>
       <CatalogPanel mode="goods" />
       <CatalogPanel mode="manufacturing" />
@@ -50,7 +50,7 @@ function CatalogPanel({ mode }: { mode: AgreementMode }) {
       <h2 className="text-lg font-bold">{MODE_LABEL[mode]}</h2>
       <p className="text-sm">{RULESET_LABEL[mode]}</p>
       {cat && (
-        <p>الحالي: <b>{cat.items.length}</b> بند — {cat.sourceLabel} {cat.isTest && <TestBadge />}</p>
+        <p>الحالي: <b>{cat.items.length}</b> بند — {cat.sourceLabel} </p>
       )}
       <label className="font-bold">اسم المصدر الموثّق *<input className="field mt-1 font-normal" value={source} onChange={(e) => setSource(e.target.value)} /></label>
       <label className="font-bold">البيانات (CSV أو JSON)
@@ -73,8 +73,8 @@ function CatalogPanel({ mode }: { mode: AgreementMode }) {
           }}>اعتماد واستبدال الجدول الحالي</button>
         </div>
       )}
-      {cat && !cat.isTest && (
-        <button className="btn btn-danger" onClick={() => { if (confirm("حذف البيانات المستوردة والعودة للبيانات التجريبية؟")) resetCatalog(mode); }}>حذف البيانات المستوردة</button>
+      {cat && cat.importedAt && (
+        <button className="btn btn-danger" onClick={() => { if (confirm("حذف البيانات المستوردة وإفراغ القائمة؟")) resetCatalog(mode); }}>حذف البيانات المستوردة</button>
       )}
       <p className="text-sm text-muted-foreground">تغيير الجدول لا يغيّر المشاريع المحفوظة؛ كل بند يحفظ قيمته وقت إضافته.</p>
     </section>

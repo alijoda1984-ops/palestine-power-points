@@ -16,9 +16,9 @@ describe("calc", () => {
 });
 
 describe("rulesets", () => {
-  it("manufacturing starts empty and does not reuse goods values", () => {
+  it("both catalogs start empty — no invented book values", () => {
     expect(defaultCatalog("manufacturing").items).toHaveLength(0);
-    expect(defaultCatalog("goods").isTest).toBe(true);
+    expect(defaultCatalog("goods").items).toHaveLength(0);
   });
 });
 

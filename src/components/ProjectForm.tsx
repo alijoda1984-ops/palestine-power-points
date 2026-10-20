@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { AgreementMode, Project } from "@/lib/types";
-import { MODE_LABEL } from "@/lib/types";
+import { MODE_DESC, MODE_LABEL } from "@/lib/types";
 import { ErrorBox } from "./Shell";
 
 export type ProjectDetails = Omit<Project, "id" | "lines" | "createdAt" | "updatedAt" | "agreementTerms">;
@@ -44,7 +44,7 @@ export function ProjectForm({ initial, lockMode, submitLabel, onSubmit }: {
   return (
     <form onSubmit={submit} className="grid gap-4" noValidate>
       {Object.keys(errors).length > 0 && <ErrorBox>يرجى تصحيح الحقول المؤشّر عليها.</ErrorBox>}
-      {F({ k: "name", label: "اسم المشروع *", err: errors.name })}
+      {F({ k: "name", label: "اسم المشروع / الزبون *", err: errors.name })}
       {F({ k: "location", label: "الموقع" })}
       {F({ k: "date", label: "التاريخ *", type: "date", err: errors.date })}
       <fieldset className="grid gap-3 rounded-xl border-2 p-3">
@@ -60,9 +60,9 @@ export function ProjectForm({ initial, lockMode, submitLabel, onSubmit }: {
       <fieldset className="grid gap-2 rounded-xl border-2 p-3" disabled={lockMode}>
         <legend className="px-1 font-bold">نوع الاتفاق</legend>
         {(Object.keys(MODE_LABEL) as AgreementMode[]).map((m) => (
-          <label key={m} className="flex min-h-12 items-center gap-3 rounded-lg border-2 px-3 has-[:checked]:border-primary has-[:checked]:bg-muted">
+          <label key={m} className="flex min-h-12 items-center py-2 gap-3 rounded-lg border-2 px-3 has-[:checked]:border-primary has-[:checked]:bg-muted">
             <input type="radio" name="mode" className="size-5" checked={d.mode === m} onChange={() => set("mode", m)} />
-            <span className="font-bold">{MODE_LABEL[m]}</span>
+            <span><span className="block font-bold">{MODE_LABEL[m]}</span><span className="block text-sm text-muted-foreground">{MODE_DESC[m]}</span></span>
           </label>
         ))}
         {lockMode && <span className="text-sm text-muted-foreground">لا يمكن تغيير النوع بعد إضافة بنود، لأن لكل نوع قيم نقاط مختلفة.</span>}

@@ -5,7 +5,7 @@ import { ErrorBox, Shell, TestBadge } from "@/components/Shell";
 import { deleteProject, getCatalog, getProject, saveProject, uid, useStore } from "@/lib/storage";
 import { filterItems, sections } from "@/lib/catalog";
 import { fmt, groupBySection, laborTotal, lineTotal, totalPoints } from "@/lib/calc";
-import { MODE_LABEL, RULESET_LABEL, type CatalogItem, type Project, type ProjectLine } from "@/lib/types";
+import { MODE_DESC, MODE_LABEL, RULESET_LABEL, VERIFY_NOTE, type CatalogItem, type Project, type ProjectLine } from "@/lib/types";
 
 export const Route = createFileRoute("/projects/$id/")({
   head: () => ({
@@ -36,6 +36,7 @@ function EditorInner({ project: p }: { project: Project }) {
   const [q, setQ] = useState("");
   const [qtys, setQtys] = useState<Record<string, string>>({});
   const [showManual, setShowManual] = useState(false);
+  const [editing, setEditing] = useState<string | null>(null);
 
   const update = (lines: ProjectLine[], extra: Partial<Project> = {}) => {
     try { saveProject({ ...p, ...extra, lines }); } catch (e) { toast.error((e as Error).message); }
@@ -61,7 +62,8 @@ function EditorInner({ project: p }: { project: Project }) {
   return (
     <Shell title={p.name}>
       <section className="mb-4 rounded-xl border-2 p-3">
-        <div className="font-bold">{MODE_LABEL[p.mode]}</div>
+        <div className="rounded-lg bg-primary p-2 text-center text-lg font-bold text-primary-foreground">نوع الاتفاق: {MODE_LABEL[p.mode]}</div>
+        <p className="mt-1 text-sm">{MODE_DESC[p.mode]}</p>
         <div className="text-sm text-muted-foreground">{[p.location, p.ownerName, p.date].filter(Boolean).join(" · ")}</div>
         <div className="mt-3 flex flex-wrap gap-2">
           <Link to="/projects/$id/edit" params={{ id: p.id }} className="btn btn-outline">تعديل البيانات</Link>
@@ -70,6 +72,8 @@ function EditorInner({ project: p }: { project: Project }) {
         </div>
       </section>
 
+      <p className="mb-4 rounded-lg border-2 border-dashed p-2 text-sm font-bold">{VERIFY_NOTE}</p>
+
       {/* ADD ITEMS */}
       <section className="mb-6 rounded-xl border-2 border-foreground p-3">
         <h2 className="mb-1 text-lg font-bold">إضافة بنود</h2>
@@ -77,7 +81,7 @@ function EditorInner({ project: p }: { project: Project }) {
         {catalog?.isTest && <div className="mb-2"><TestBadge /></div>}
         {catalog && catalog.items.length === 0 ? (
           <ErrorBox>
-            لا توجد بيانات نقاط لنوع «{MODE_LABEL[p.mode]}» بعد. استورد الكتاب الموثّق من <Link to="/data" className="underline">إدارة البيانات</Link>، أو أضف بنداً يدوياً.
+            قائمة بنود «{MODE_LABEL[p.mode]}» فارغة. لم تُدخَل أي قيم من كتاب النقابة بعد. أدخلها من <Link to="/data" className="underline">إدارة البيانات</Link>، أو أضف بنداً يدوياً أدناه.
           </ErrorBox>
         ) : (
           <>
@@ -104,7 +108,7 @@ function EditorInner({ project: p }: { project: Project }) {
             </ul>
           </>
         )}
-        <button className="btn btn-outline mt-3 w-full" onClick={() => setShowManual((v) => !v)}>{showManual ? "إخفاء" : "+ بند يدوي"}</button>
+        <button className="btn btn-outline mt-3 w-full" onClick={() => setShowManual((v) => !v)}>{showManual ? "إخفاء" : "+ إضافة بند يدوي"}</button>
         {showManual && <ManualLine onAdd={(l) => { update([...p.lines, l]); setShowManual(false); toast.success("أُضيف البند"); }} />}
       </section>
 
@@ -116,19 +120,26 @@ function EditorInner({ project: p }: { project: Project }) {
           <table className="w-full border-collapse text-right">
             <thead>
               <tr className="border-b-2 border-foreground bg-muted">
-                <th className="p-2">البند / الرمز</th><th className="p-2">الكمية</th><th className="p-2">نقاط/بند</th><th className="p-2">المجموع</th><th className="p-2"><span className="sr-only">حذف</span></th>
+                <th className="p-2">البند / الرمز</th><th className="p-2">الكمية</th><th className="p-2">نقاط/بند</th><th className="p-2">المجموع</th><th className="p-2"><span className="sr-only">إجراءات</span></th>
               </tr>
             </thead>
             {groups.map((g) => (
               <tbody key={g.section}>
                 <tr><td colSpan={5} className="bg-secondary p-2 font-bold">{g.section}</td></tr>
-                {g.lines.map((l) => (
+                {g.lines.map((l) => editing === l.id ? (
+                  <tr key={l.id}><td colSpan={5} className="p-1">
+                    <ManualLine initial={l} submitLabel="حفظ التعديل" onCancel={() => setEditing(null)} onAdd={(nl) => { update(p.lines.map((x) => x.id === l.id ? { ...nl, id: l.id, catalogItemId: l.catalogItemId, isTest: false } : x)); setEditing(null); toast.success("تم حفظ البند"); }} />
+                  </td></tr>
+                ) : (
                   <tr key={l.id} className="border-b align-middle">
-                    <td className="p-2"><div className="font-bold">{l.name}</div><div className="text-sm text-muted-foreground">{l.code || "—"}{l.isTest ? " · تجريبي" : ""}{!l.catalogItemId ? " · يدوي" : ""}</div></td>
+                    <td className="p-2"><div className="font-bold">{l.name}</div><div className="text-sm text-muted-foreground">الرمز: {l.code || "—"}{!l.catalogItemId ? " · يدوي" : ""}</div></td>
                     <td className="p-1"><QtyInput value={l.quantity} onChange={(v) => update(p.lines.map((x) => x.id === l.id ? { ...x, quantity: v } : x))} /></td>
                     <td className="p-2">{fmt(l.pointsPerItem)}</td>
                     <td className="p-2 font-bold">{fmt(lineTotal(l))}</td>
-                    <td className="p-1"><button className="btn btn-danger min-h-11 px-3" aria-label={`حذف ${l.name}`} onClick={() => { if (confirm(`حذف «${l.name}»؟`)) update(p.lines.filter((x) => x.id !== l.id)); }}>✕</button></td>
+                    <td className="p-1"><div className="flex flex-col gap-1">
+                      <button className="btn btn-outline min-h-11 px-3" aria-label={`تعديل ${l.name}`} onClick={() => setEditing(l.id)}>✎</button>
+                      <button className="btn btn-danger min-h-11 px-3" aria-label={`حذف ${l.name}`} onClick={() => { if (confirm(`حذف «${l.name}»؟`)) update(p.lines.filter((x) => x.id !== l.id)); }}>✕</button>
+                    </div></td>
                   </tr>
                 ))}
                 <tr className="border-b-2 border-foreground"><td colSpan={3} className="p-2 font-bold">مجموع {g.section}</td><td className="p-2 font-bold" colSpan={2}>{fmt(g.subtotal)}</td></tr>
@@ -162,19 +173,21 @@ function QtyInput({ value, onChange }: { value: number; onChange: (v: number) =>
   );
 }
 
-function ManualLine({ onAdd }: { onAdd: (l: ProjectLine) => void }) {
-  const [f, setF] = useState({ section: "", code: "", name: "", points: "", qty: "1" });
+function ManualLine({ onAdd, initial, submitLabel = "إضافة البند اليدوي", onCancel }: { onAdd: (l: ProjectLine) => void; initial?: ProjectLine; submitLabel?: string; onCancel?: () => void }) {
+  const [f, setF] = useState(initial
+    ? { section: initial.section, code: initial.code, name: initial.name, points: String(initial.pointsPerItem), qty: String(initial.quantity) }
+    : { section: "", code: "", name: "", points: "", qty: "1" });
   const [err, setErr] = useState("");
   return (
     <div className="mt-3 grid gap-2 rounded-lg border-2 border-dashed p-3">
-      <p className="text-sm">بند يدوي: أنت مسؤول عن صحة قيمة النقاط المدخلة.</p>
+      <p className="text-sm">أدخل القيم كما في كتاب النقابة. أنت مسؤول عن صحة النقاط.</p>
       {err && <ErrorBox>{err}</ErrorBox>}
-      <input className="field" placeholder="القسم" value={f.section} onChange={(e) => setF({ ...f, section: e.target.value })} />
-      <input className="field" placeholder="الرمز" value={f.code} onChange={(e) => setF({ ...f, code: e.target.value })} />
-      <input className="field" placeholder="اسم البند *" value={f.name} onChange={(e) => setF({ ...f, name: e.target.value })} />
+      <input className="field" placeholder="القسم" aria-label="القسم" value={f.section} onChange={(e) => setF({ ...f, section: e.target.value })} />
+      <input className="field" placeholder="الرمز" aria-label="الرمز" value={f.code} onChange={(e) => setF({ ...f, code: e.target.value })} />
+      <input className="field" placeholder="اسم البند *" aria-label="اسم البند" value={f.name} onChange={(e) => setF({ ...f, name: e.target.value })} />
       <div className="grid grid-cols-2 gap-2">
-        <input className="field" inputMode="decimal" placeholder="نقاط/بند *" value={f.points} onChange={(e) => setF({ ...f, points: e.target.value })} />
-        <input className="field" inputMode="decimal" placeholder="الكمية *" value={f.qty} onChange={(e) => setF({ ...f, qty: e.target.value })} />
+        <input className="field" inputMode="decimal" placeholder="نقاط/بند *" aria-label="نقاط للوحدة" value={f.points} onChange={(e) => setF({ ...f, points: e.target.value })} />
+        <input className="field" inputMode="decimal" placeholder="الكمية *" aria-label="كمية البند" value={f.qty} onChange={(e) => setF({ ...f, qty: e.target.value })} />
       </div>
       <button className="btn btn-primary" onClick={() => {
         const pts = num(f.points), q = num(f.qty);
@@ -182,7 +195,8 @@ function ManualLine({ onAdd }: { onAdd: (l: ProjectLine) => void }) {
         if (f.points.trim() === "" || !isFinite(pts) || pts < 0) return setErr("قيمة النقاط غير صالحة");
         if (!isFinite(q) || q <= 0) return setErr("الكمية يجب أن تكون أكبر من صفر");
         onAdd({ id: uid(), catalogItemId: null, section: f.section.trim() || "بنود يدوية", code: f.code.trim(), name: f.name.trim(), pointsPerItem: pts, quantity: q, isTest: false });
-      }}>إضافة البند اليدوي</button>
+      }}>{submitLabel}</button>
+      {onCancel && <button className="btn btn-outline" onClick={onCancel}>إلغاء</button>}
     </div>
   );
 }

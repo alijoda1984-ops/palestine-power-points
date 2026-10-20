@@ -27,7 +27,11 @@ function write(key: string, value: unknown) {
   window.dispatchEvent(new Event(EVT));
 }
 
-export const getProjects = (): Project[] => read<Project[]>(PROJECTS_KEY, []);
+export const getProjects = (): Project[] => {
+  const v = read<unknown>(PROJECTS_KEY, []);
+  if (!Array.isArray(v)) return [];
+  return v.filter((p): p is Project => !!p && typeof p === "object" && typeof (p as Project).id === "string");
+};
 export const getProject = (id: string) => getProjects().find((p) => p.id === id) ?? null;
 
 export function saveProject(p: Project) {
@@ -76,29 +80,29 @@ export function useStore<T>(reader: () => T): T | undefined {
 const modeZ = z.enum(["goods", "manufacturing"]);
 const lineZ = z.object({
   id: z.string(),
-  catalogItemId: z.string().nullable(),
-  section: z.string(),
-  code: z.string(),
+  catalogItemId: z.string().nullable().default(null),
+  section: z.string().default(""),
+  code: z.string().default(""),
   name: z.string(),
   pointsPerItem: z.number().finite().min(0),
   quantity: z.number().finite().min(0),
-  isTest: z.boolean(),
+  isTest: z.boolean().default(false),
 });
 export const projectZ = z.object({
   id: z.string().min(1),
   name: z.string(),
-  location: z.string(),
-  ownerName: z.string(),
-  ownerPhone: z.string(),
-  electricianName: z.string(),
-  electricianPhone: z.string(),
-  date: z.string(),
+  location: z.string().default(""),
+  ownerName: z.string().default(""),
+  ownerPhone: z.string().default(""),
+  electricianName: z.string().default(""),
+  electricianPhone: z.string().default(""),
+  date: z.string().default(""),
   mode: modeZ,
   pricePerPoint: z.number().finite().min(0),
   agreementTerms: z.string().default(""),
   notes: z.string().default(""),
   lines: z.array(lineZ),
-  createdAt: z.string(),
+  createdAt: z.string().default(""),
   updatedAt: z.string(),
 });
 const catalogZ = z.object({
@@ -121,7 +125,9 @@ export const backupZ = z.object({
   version: z.literal(1),
   exportedAt: z.string(),
   projects: z.array(projectZ),
-  catalogs: z.object({ goods: catalogZ.nullable(), manufacturing: catalogZ.nullable() }),
+  catalogs: z
+    .object({ goods: catalogZ.nullable().default(null), manufacturing: catalogZ.nullable().default(null) })
+    .default({ goods: null, manufacturing: null }),
 });
 export type Backup = z.infer<typeof backupZ>;
 
@@ -159,7 +165,10 @@ export function applyBackup(b: Backup, mode: "merge" | "replace") {
   const base = mode === "replace" ? [] : getProjects();
   const map = new Map(base.map((p) => [p.id, p]));
   for (const p of b.projects) map.set(p.id, p as Project);
-  setProjects([...map.values()]);
+  const merged = [...map.values()];
+  setProjects(merged);
+  // Verify the write really landed before reporting success.
+  if (getProjects().length !== merged.length) throw new Error("لم يتم حفظ المشاريع المستوردة على الجهاز.");
   if (b.catalogs.goods) saveCatalog(b.catalogs.goods as Catalog);
   if (b.catalogs.manufacturing) saveCatalog(b.catalogs.manufacturing as Catalog);
   return map.size;

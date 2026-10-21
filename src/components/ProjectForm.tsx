@@ -1,7 +1,8 @@
 import { useState } from "react";
-import type { AgreementMode, Project } from "@/lib/types";
+import type { Project } from "@/lib/types";
 import { MODE_DESC, MODE_LABEL } from "@/lib/types";
 import { ErrorBox } from "./Shell";
+import { Button } from "@/components/ui/button";
 
 export type ProjectDetails = Omit<Project, "id" | "lines" | "createdAt" | "updatedAt" | "agreementTerms">;
 
@@ -12,7 +13,7 @@ export function emptyDetails(): ProjectDetails {
   };
 }
 
-export function ProjectForm({ initial, lockMode, submitLabel, onSubmit }: {
+export function ProjectForm({ initial, submitLabel, onSubmit }: {
   initial: ProjectDetails; lockMode?: boolean; submitLabel: string; onSubmit: (d: ProjectDetails) => void;
 }) {
   const [d, setD] = useState(initial);
@@ -47,26 +48,19 @@ export function ProjectForm({ initial, lockMode, submitLabel, onSubmit }: {
       {F({ k: "name", label: "اسم المشروع / الزبون *", err: errors.name })}
       {F({ k: "location", label: "الموقع" })}
       {F({ k: "date", label: "التاريخ *", type: "date", err: errors.date })}
-      <fieldset className="grid gap-3 rounded-xl border-2 p-3">
-        <legend className="px-1 font-bold">صاحب العمل</legend>
-        {F({ k: "ownerName", label: "الاسم" })}
-        {F({ k: "ownerPhone", label: "الهاتف", type: "tel" })}
-      </fieldset>
-      <fieldset className="grid gap-3 rounded-xl border-2 p-3">
-        <legend className="px-1 font-bold">الكهربائي</legend>
-        {F({ k: "electricianName", label: "الاسم" })}
-        {F({ k: "electricianPhone", label: "الهاتف", type: "tel" })}
-      </fieldset>
-      <fieldset className="grid gap-2 rounded-xl border-2 p-3" disabled={lockMode}>
-        <legend className="px-1 font-bold">نوع الاتفاق</legend>
-        {(Object.keys(MODE_LABEL) as AgreementMode[]).map((m) => (
-          <label key={m} className="flex min-h-12 items-center py-2 gap-3 rounded-lg border-2 px-3 has-[:checked]:border-primary has-[:checked]:bg-muted">
-            <input type="radio" name="mode" className="size-5" checked={d.mode === m} onChange={() => set("mode", m)} />
-            <span><span className="block font-bold">{MODE_LABEL[m]}</span><span className="block text-sm text-muted-foreground">{MODE_DESC[m]}</span></span>
-          </label>
-        ))}
-        {lockMode && <span className="text-sm text-muted-foreground">لا يمكن تغيير النوع بعد إضافة بنود، لأن لكل نوع قيم نقاط مختلفة.</span>}
-      </fieldset>
+      {F({ k: "ownerName", label: "اسم صاحب العمل" })}
+      <div className="border-r-4 border-primary bg-muted p-3">
+        <div className="font-bold">نوع الاتفاق: {MODE_LABEL[d.mode]}</div>
+        <p className="text-sm">{MODE_DESC[d.mode]}</p>
+      </div>
+      <details>
+        <summary className="min-h-12 cursor-pointer py-3 font-bold">بيانات التواصل والكهربائي</summary>
+        <div className="grid gap-3 py-2">
+          {F({ k: "ownerPhone", label: "هاتف صاحب العمل", type: "tel" })}
+          {F({ k: "electricianName", label: "اسم الكهربائي" })}
+          {F({ k: "electricianPhone", label: "هاتف الكهربائي", type: "tel" })}
+        </div>
+      </details>
       <label className="block">
         <span className="mb-1 block font-bold">سعر النقطة (شيكل) *</span>
         <input className="field" inputMode="decimal" value={price} aria-invalid={!!errors.price} onChange={(e) => setPrice(e.target.value)} placeholder="مثال: 25" />
@@ -76,7 +70,7 @@ export function ProjectForm({ initial, lockMode, submitLabel, onSubmit }: {
         <span className="mb-1 block font-bold">ملاحظات</span>
         <textarea className="field min-h-24" value={d.notes} onChange={(e) => set("notes", e.target.value)} />
       </label>
-      <button type="submit" className="btn btn-primary text-lg">{submitLabel}</button>
+      <Button type="submit" className="btn btn-primary text-lg">{submitLabel}</Button>
     </form>
   );
 }

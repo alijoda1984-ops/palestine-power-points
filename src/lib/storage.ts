@@ -30,11 +30,22 @@ function write(key: string, value: unknown) {
 export const getProjects = (): Project[] => {
   const v = read<unknown>(PROJECTS_KEY, []);
   if (!Array.isArray(v)) return [];
-  return v.filter((p): p is Project => !!p && typeof p === "object" && typeof (p as Project).id === "string");
+  const result = z.array(projectZ).safeParse(v);
+  return result.success ? result.data : [];
 };
 export const getProject = (id: string) => getProjects().find((p) => p.id === id) ?? null;
 
+function assertReadableProjects() {
+  const raw = localStorage.getItem(PROJECTS_KEY);
+  if (raw === null) return;
+  try {
+    if (z.array(projectZ).safeParse(JSON.parse(raw)).success) return;
+  } catch { /* Preserve the original stored text on failure. */ }
+  throw new Error("تعذّرت قراءة المشاريع المحفوظة. لم نغيّر بياناتك؛ احتفظ بنسختك الاحتياطية قبل أي استبدال.");
+}
+
 export function saveProject(p: Project) {
+  assertReadableProjects();
   const all = getProjects();
   const next = { ...p, updatedAt: new Date().toISOString() };
   const i = all.findIndex((x) => x.id === p.id);
@@ -44,6 +55,7 @@ export function saveProject(p: Project) {
   return next;
 }
 export function deleteProject(id: string) {
+  assertReadableProjects();
   write(PROJECTS_KEY, getProjects().filter((p) => p.id !== id));
 }
 export const setProjects = (ps: Project[]) => write(PROJECTS_KEY, ps);
@@ -132,6 +144,7 @@ export const backupZ = z.object({
 export type Backup = z.infer<typeof backupZ>;
 
 export function buildBackup(): Backup {
+  assertReadableProjects();
   const stored = (m: AgreementMode) => read<Catalog | null>(catalogKey(m), null);
   return {
     app: "kayla-electric",
@@ -162,14 +175,38 @@ export function parseBackup(text: string): { ok: true; data: Backup } | { ok: fa
 
 /** Merge: projects with same id are replaced by the backup version. */
 export function applyBackup(b: Backup, mode: "merge" | "replace") {
+  const validated = backupZ.parse(b);
+  if (mode === "merge") assertReadableProjects();
   const base = mode === "replace" ? [] : getProjects();
   const map = new Map(base.map((p) => [p.id, p]));
-  for (const p of b.projects) map.set(p.id, p as Project);
+  for (const p of validated.projects) map.set(p.id, p);
   const merged = [...map.values()];
-  setProjects(merged);
-  // Verify the write really landed before reporting success.
-  if (getProjects().length !== merged.length) throw new Error("لم يتم حفظ المشاريع المستوردة على الجهاز.");
-  if (b.catalogs.goods) saveCatalog(b.catalogs.goods as Catalog);
-  if (b.catalogs.manufacturing) saveCatalog(b.catalogs.manufacturing as Catalog);
+  const changes: [string, string][] = [[PROJECTS_KEY, JSON.stringify(merged)]];
+  for (const agreementMode of ["goods", "manufacturing"] as const) {
+    const catalog = validated.catalogs[agreementMode];
+    if (catalog) {
+      if (catalog.mode !== agreementMode) throw new Error("نوع اتفاق الكتالوج لا يطابق النسخة الاحتياطية.");
+      changes.push([catalogKey(agreementMode), JSON.stringify(catalog)]);
+    }
+  }
+  const previous = changes.map(([key]) => [key, localStorage.getItem(key)] as const);
+  try {
+    for (const [key, value] of changes) {
+      localStorage.setItem(key, value);
+      if (localStorage.getItem(key) !== value) throw new Error("فشل التحقق من البيانات المحفوظة.");
+    }
+  } catch {
+    try {
+      for (const [key, value] of previous) {
+        if (value === null) localStorage.removeItem(key);
+        else localStorage.setItem(key, value);
+      }
+    } catch {
+      throw new Error("تعذّر الاستيراد واستعادة بعض البيانات السابقة. احتفظ بملف النسخة ولا تمسح بيانات المتصفح.");
+    }
+    throw new Error("تعذّر الاستيراد؛ أُعيدت البيانات السابقة دون تغيير. تحقق من مساحة التخزين.");
+  } finally {
+    window.dispatchEvent(new Event(EVT));
+  }
   return map.size;
 }

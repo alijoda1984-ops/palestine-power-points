@@ -7,8 +7,6 @@ import { saveProject, uid } from "@/lib/storage";
 export const Route = createFileRoute("/projects/new")({
   head: () => ({
     meta: [
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
       { title: "مشروع جديد — كيلة الأعمال الكهربائية" },
       { name: "description", content: "إنشاء مشروع كيلة كهربائية جديد." },
       { property: "og:title", content: "مشروع جديد" },

@@ -16,9 +16,8 @@ export function groupBySection(lines: ProjectLine[]): SectionGroup[] {
   const map = new Map<string, ProjectLine[]>();
   for (const l of lines) {
     const k = l.section || "بدون قسم";
-    const group = map.get(k);
-    if (group) group.push(l);
-    else map.set(k, [l]);
+    if (!map.has(k)) map.set(k, []);
+    map.get(k)!.push(l);
   }
   return [...map.entries()].map(([section, ls]) => ({
     section,

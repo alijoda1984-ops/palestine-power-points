@@ -52,7 +52,7 @@ function EditorInner({ project: p }: { project: Project }) {
     const qn = num(raw);
     if (!isFinite(qn) || qn <= 0) { toast.error("أدخل كمية أكبر من صفر"); return; }
     const existing = p.lines.find((l) => l.catalogItemId === it.id);
-    const saved = existing ? update(p.lines.map((l) => l === existing ? { ...l, quantity: l.quantity + qn } : l));
+    const saved = existing ? update(p.lines.map((l) => l === existing ? { ...l, quantity: l.quantity + qn } : l))
      : update([...p.lines, { id: uid(), catalogItemId: it.id, section: it.section, code: it.code, name: it.name, pointsPerItem: it.points, quantity: qn, isTest: !!catalog?.isTest }]);
     if (!saved) return;
     setQtys((x) => ({ ...x, [it.id]: "1" }));

@@ -26,7 +26,7 @@ describe("backup", () => {
     expect(r.ok).toBe(true);
     if (r.ok) applyBackup(r.data, "merge");
     expect(getProjects().map((p) => p.id).sort()).toEqual(["a", "b"]);
-    expect(getProjects()[0].lines[0].quantity).toBe(3);
+    expect(getProjects()[0]?.lines[0]?.quantity).toBe(3);
   });
 
   it("merge keeps existing projects", () => {
@@ -68,7 +68,7 @@ describe("backup", () => {
     saveProject(proj("c"));
     const before = localStorage.getItem("kayla.projects.v1");
     const original = Storage.prototype.setItem;
-    const spy = vi.spyOn(Storage.prototype, "setItem").mockImplementation(function (key, value) {
+    const spy = vi.spyOn(Storage.prototype, "setItem").mockImplementation(function (this: Storage, key: string, value: string) {
       if (key === "kayla.catalog.goods.v1") throw new Error("quota");
       original.call(this, key, value);
     });

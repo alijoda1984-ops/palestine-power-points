@@ -6,7 +6,7 @@ import { uid } from "@/lib/storage";
 import type { ProjectLine } from "@/lib/types";
 
 export function WorkLineForm({ onAdd, initial, submitLabel = "إضافة البند", onCancel }: {
-  onAdd: (line: ProjectLine) => void; initial?: ProjectLine; submitLabel?: string; onCancel?: () => void;
+  onAdd: (line: ProjectLine) => void; initial?: ProjectLine | undefined; submitLabel?: string; onCancel?: () => void;
 }) {
   const [f, setF] = useState(initial ? { section: initial.section, code: initial.code, name: initial.name, points: String(initial.pointsPerItem), qty: String(initial.quantity) }
     : { section: "", code: "", name: "", points: "", qty: "1" });

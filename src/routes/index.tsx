@@ -6,6 +6,8 @@ import { Shell } from "@/components/Shell";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
       { title: "كيلة الأعمال الكهربائية" },
       { name: "description", content: "أداة الكهربائي لحساب النقاط وأجرة العمل، وحفظ المشاريع وطباعة الاتفاقيات." },
       { property: "og:title", content: "كيلة الأعمال الكهربائية" },

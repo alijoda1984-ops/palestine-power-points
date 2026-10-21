@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { toast } from "sonner";
 import { ErrorBox, Shell } from "@/components/Shell";
@@ -7,6 +8,8 @@ import { applyBackup, buildBackup, getProjects, parseBackup, useStore, type Back
 export const Route = createFileRoute("/backup")({
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
       { title: "النسخ الاحتياطي — كيلة الأعمال الكهربائية" },
       { name: "description", content: "تصدير واستيراد نسخة احتياطية من المشاريع." },
       { property: "og:title", content: "النسخ الاحتياطي" },
@@ -67,14 +70,14 @@ function BackupPage() {
 
   return (
     <Shell title="النسخ الاحتياطي">
-      <section className="mb-6 grid gap-2 rounded-xl border-2 p-4">
+      <section className="mb-6 grid gap-3 border-b-2 pb-5">
         <h2 className="text-lg font-bold">تصدير</h2>
         <p>عدد المشاريع على الجهاز: <b>{projects?.length ?? "…"}</b>. الملف يشمل المشاريع وبيانات الكتب المستوردة.</p>
         {projects && projects.length === 0 && <p className="rounded-lg border-2 border-dashed p-2 font-bold">لا توجد مشاريع محفوظة بعد. أنشئ مشروعاً أولاً أو استورد نسخة.</p>}
-        <button className="btn btn-primary" onClick={exportFile} disabled={!projects || projects.length === 0}>حفظ ملف النسخة (JSON)</button>
+        <Button className="btn btn-primary" onClick={exportFile} disabled={!projects || projects.length === 0}>حفظ ملف النسخة (JSON)</Button>
         <p className="text-sm text-muted-foreground">على الآيفون: احفظ الملف في «الملفات» أو أرسله لنفسك. البيانات تُحذف إذا مُسحت بيانات Safari.</p>
       </section>
-      <section className="grid gap-2 rounded-xl border-2 p-4">
+      <section className="grid gap-3">
         <h2 className="text-lg font-bold">استيراد</h2>
         <input type="file" key={pending ? "p" : "n"} accept="application/json,.json" className="field" aria-label="ملف النسخة الاحتياطية" onChange={(e) => onFile(e.target.files?.[0])} />
         {error && <ErrorBox>{error}</ErrorBox>}
@@ -82,8 +85,8 @@ function BackupPage() {
           <div className="grid gap-2 rounded-lg bg-muted p-3">
             {pending.projects.length === 0 && <ErrorBox>هذا الملف لا يحتوي على أي مشروع.</ErrorBox>}
             <p>ملف صالح: <b>{pending.projects.length}</b> مشروع، بتاريخ {pending.exportedAt.slice(0, 10)}.</p>
-            <button className="btn btn-primary" onClick={() => doImport("merge")}>دمج مع الموجود</button>
-            <button className="btn btn-danger" onClick={() => doImport("replace")}>استبدال الكل</button>
+            <Button className="btn btn-primary" disabled={pending.projects.length === 0} onClick={() => doImport("merge")}>دمج مع الموجود</Button>
+            <Button className="btn btn-danger" disabled={pending.projects.length === 0} onClick={() => doImport("replace")}>استبدال الكل</Button>
           </div>
         )}
       </section>

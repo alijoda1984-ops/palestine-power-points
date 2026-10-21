@@ -26,7 +26,8 @@ function BackupPage() {
 
   const exportFile = async () => {
     setError("");
-    const b = buildBackup(); // always read fresh from device storage
+    let b: Backup;
+    try { b = buildBackup(); } catch (e) { setError((e as Error).message); return; }
     if (b.projects.length === 0) {
       setError("لا توجد مشاريع محفوظة في هذا التطبيق على هذا الجهاز. ملاحظة: التطبيق المضاف للشاشة الرئيسية وSafari لهما تخزين منفصل، وكذلك رابط المعاينة والرابط المنشور. افتح التطبيق من نفس المكان الذي أنشأت فيه المشاريع.");
       return;

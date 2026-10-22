@@ -117,6 +117,10 @@ const catalogZ = z.object({
       code: z.string(),
       name: z.string(),
       points: z.number().finite().min(0),
+      unit: z.string().optional(),
+      sourceRow: z.number().int().optional(),
+      bookPage: z.number().nullable().optional(),
+      sourceNotes: z.string().optional(),
     }),
   ),
 });

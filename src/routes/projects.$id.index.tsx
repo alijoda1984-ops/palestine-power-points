@@ -98,7 +98,8 @@ function EditorInner({ project: p }: { project: Project }) {
                 <li key={it.id} className="flex items-center gap-2 p-2">
                   <div className="min-w-0 flex-1">
                     <div className="font-bold">{it.name}</div>
-                    <div className="text-sm text-muted-foreground">{it.code} · {it.section} · {fmt(it.points)} نقطة</div>
+                    <div className="text-sm text-muted-foreground">{it.code || "دون رمز في المصدر"} · {it.section} · {fmt(it.points)} نقطة{it.unit ? ` / ${it.unit}` : ""}{it.bookPage ? ` · صفحة ${it.bookPage}` : ""}</div>
+                    {it.sourceNotes && <div className="text-sm text-muted-foreground">ملاحظة المصدر: {it.sourceNotes}</div>}
                   </div>
                   <input className="field w-20 text-center" inputMode="decimal" placeholder="1" aria-label={`كمية ${it.name}`}
                     value={qtys[it.id] ?? ""} onChange={(e) => setQtys((x) => ({ ...x, [it.id]: e.target.value }))} />

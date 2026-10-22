@@ -24,6 +24,10 @@ export interface CatalogItem {
   code: string;
   name: string;
   points: number;
+  unit?: string;
+  sourceRow?: number;
+  bookPage?: number | null;
+  sourceNotes?: string;
 }
 
 export interface Catalog {

@@ -1,5 +1,6 @@
 import { useState } from "react";
-import type { AgreementMode, Project } from "@/lib/types";
+import type { Project } from "@/lib/types";
+import { projectModeOptions } from "@/lib/agreement-phase";
 import { MODE_DESC, MODE_LABEL } from "@/lib/types";
 import { ErrorBox } from "./Shell";
 
@@ -59,7 +60,7 @@ export function ProjectForm({ initial, lockMode, submitLabel, onSubmit }: {
       </fieldset>
       <fieldset className="grid gap-2 rounded-xl border-2 p-3" disabled={lockMode}>
         <legend className="px-1 font-bold">نوع الاتفاق</legend>
-        {(Object.keys(MODE_LABEL) as AgreementMode[]).map((m) => (
+        {projectModeOptions(initial.mode).map((m) => (
           <label key={m} className="flex min-h-12 items-center py-2 gap-3 rounded-lg border-2 px-3 has-[:checked]:border-primary has-[:checked]:bg-muted">
             <input type="radio" name="mode" className="size-5" checked={d.mode === m} onChange={() => set("mode", m)} />
             <span><span className="block font-bold">{MODE_LABEL[m]}</span><span className="block text-sm text-muted-foreground">{MODE_DESC[m]}</span></span>

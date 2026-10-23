@@ -1,0 +1,2 @@
+- [x] Explain that free work resumes when credits refresh; running out does not delete the project.
+- [ ] Verify approved Excel imports independently per agreement mode without guessing or losing local data.

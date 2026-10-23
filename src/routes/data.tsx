@@ -6,6 +6,7 @@ import { getCatalog, resetCatalog, saveCatalog, useStore } from "@/lib/storage";
 import { parseCatalogText } from "@/lib/catalog";
 import { approvedWorkbookItems, mergeWorkbookItems, WORKBOOK_SOURCE } from "@/lib/approved-workbook";
 import { Button } from "@/components/ui/button";
+import { ACTIVE_AGREEMENT_MODES } from "@/lib/agreement-phase";
 import { MODE_LABEL, RULESET_LABEL, type AgreementMode, type CatalogItem } from "@/lib/types";
 
 export const Route = createFileRoute("/data")({
@@ -28,8 +29,7 @@ function DataPage() {
       <div className="mb-4 rounded-xl border-2 border-warning-foreground bg-warning p-3 text-warning-foreground">
         <b>مهم:</b> الإكسل الذي أكّدت أنه من صور الكتاب متاح أدناه. تُضاف القيم الصريحة فقط؛ تُستبعد البنود المعلّمة للمراجعة والقيم غير الواضحة، ولا تُستكمل الخانات الناقصة. لكل نوع اتفاق قائمة مستقلة تماماً، ولا تُنقل القيم بينهما. لا يتضمن الإكسل رموز بنود، لذلك تبقى الرموز فارغة.
       </div>
-      <CatalogPanel mode="goods" />
-      <CatalogPanel mode="manufacturing" />
+      {ACTIVE_AGREEMENT_MODES.map((mode) => <CatalogPanel key={mode} mode={mode} />)}
     </Shell>
   );
 }

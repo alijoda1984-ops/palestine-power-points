@@ -10,9 +10,11 @@ import { TestBadge } from "@/components/Shell";
 export const Route = createFileRoute("/projects/$id/agreement")({
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
       { title: "اتفاقية عمل — كيلة الأعمال الكهربائية" },
       { name: "description", content: "اتفاقية عمل كهربائي قابلة للطباعة." },
-      { property: "og:title", content: "اتفاقية عمل" },
+      { property: "og:title", content: "اتفاقية عمل — كيلة الأعمال الكهربائية" },
       { property: "og:description", content: "اتفاقية عمل كهربائي قابلة للطباعة." },
     ],
   }),

@@ -8,9 +8,11 @@ import { TestBadge } from "@/components/Shell";
 export const Route = createFileRoute("/projects/$id/report")({
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
       { title: "تقرير المشروع — كيلة الأعمال الكهربائية" },
       { name: "description", content: "تقرير مفصّل قابل للطباعة لنقاط المشروع وأجرة العمل." },
-      { property: "og:title", content: "تقرير المشروع" },
+      { property: "og:title", content: "تقرير المشروع — كيلة الأعمال الكهربائية" },
       { property: "og:description", content: "تقرير مفصّل قابل للطباعة." },
     ],
   }),

@@ -5,9 +5,11 @@ import { getProjects, useStore } from "@/lib/storage";
 export const Route = createFileRoute("/agreement")({
   head: () => ({
     meta: [
-      { title: "اتفاقية عمل — كيلة الأعمال الكهربائية" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+      { title: "اختيار مشروع للاتفاقية — كيلة الأعمال الكهربائية" },
       { name: "description", content: "اختر مشروعاً لإعداد وطباعة اتفاقية العمل." },
-      { property: "og:title", content: "اتفاقية عمل" },
+      { property: "og:title", content: "اختيار مشروع للاتفاقية — كيلة الأعمال الكهربائية" },
       { property: "og:description", content: "اختر مشروعاً لإعداد وطباعة اتفاقية العمل." },
     ],
   }),

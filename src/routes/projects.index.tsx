@@ -8,9 +8,11 @@ import { fmt, laborTotal, totalPoints } from "@/lib/calc";
 export const Route = createFileRoute("/projects/")({
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
       { title: "المشاريع المحفوظة — كيلة الأعمال الكهربائية" },
       { name: "description", content: "قائمة المشاريع المحفوظة على الجهاز." },
-      { property: "og:title", content: "المشاريع المحفوظة" },
+      { property: "og:title", content: "المشاريع المحفوظة — كيلة الأعمال الكهربائية" },
       { property: "og:description", content: "قائمة المشاريع المحفوظة على الجهاز." },
     ],
   }),

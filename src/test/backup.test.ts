@@ -26,7 +26,7 @@ describe("backup", () => {
     expect(r.ok).toBe(true);
     if (r.ok) applyBackup(r.data, "merge");
     expect(getProjects().map((p) => p.id).sort()).toEqual(["a", "b"]);
-    expect(getProjects()[0].lines[0].quantity).toBe(3);
+    expect(getProjects()[0]?.lines[0]?.quantity).toBe(3);
   });
 
   it("merge keeps existing projects", () => {

@@ -10,9 +10,11 @@ import { MODE_DESC, MODE_LABEL, RULESET_LABEL, VERIFY_NOTE, type CatalogItem, ty
 export const Route = createFileRoute("/projects/$id/")({
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
       { title: "كيلة المشروع — كيلة الأعمال الكهربائية" },
       { name: "description", content: "جدول حساب النقاط وأجرة العمل للمشروع." },
-      { property: "og:title", content: "كيلة المشروع" },
+      { property: "og:title", content: "كيلة المشروع — كيلة الأعمال الكهربائية" },
       { property: "og:description", content: "جدول حساب النقاط وأجرة العمل للمشروع." },
     ],
   }),

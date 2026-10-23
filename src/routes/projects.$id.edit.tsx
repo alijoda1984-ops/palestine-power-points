@@ -7,9 +7,11 @@ import { getProject, saveProject, useStore } from "@/lib/storage";
 export const Route = createFileRoute("/projects/$id/edit")({
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
       { title: "تعديل بيانات المشروع — كيلة الأعمال الكهربائية" },
       { name: "description", content: "تعديل بيانات المشروع." },
-      { property: "og:title", content: "تعديل المشروع" },
+      { property: "og:title", content: "تعديل المشروع — كيلة الأعمال الكهربائية" },
       { property: "og:description", content: "تعديل بيانات المشروع." },
     ],
   }),

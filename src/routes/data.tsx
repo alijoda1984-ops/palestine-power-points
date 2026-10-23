@@ -11,9 +11,11 @@ import { MODE_LABEL, RULESET_LABEL, type AgreementMode, type CatalogItem } from 
 export const Route = createFileRoute("/data")({
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
       { title: "إدارة بيانات الكتب — كيلة الأعمال الكهربائية" },
       { name: "description", content: "استيراد قيم النقاط الموثّقة لكل نوع اتفاق." },
-      { property: "og:title", content: "إدارة بيانات الكتب" },
+      { property: "og:title", content: "إدارة بيانات الكتب — كيلة الأعمال الكهربائية" },
       { property: "og:description", content: "استيراد قيم النقاط الموثّقة." },
     ],
   }),

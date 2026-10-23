@@ -7,9 +7,11 @@ import { applyBackup, buildBackup, getProjects, parseBackup, useStore, type Back
 export const Route = createFileRoute("/backup")({
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
       { title: "النسخ الاحتياطي — كيلة الأعمال الكهربائية" },
       { name: "description", content: "تصدير واستيراد نسخة احتياطية من المشاريع." },
-      { property: "og:title", content: "النسخ الاحتياطي" },
+      { property: "og:title", content: "النسخ الاحتياطي — كيلة الأعمال الكهربائية" },
       { property: "og:description", content: "تصدير واستيراد نسخة احتياطية من المشاريع." },
     ],
   }),

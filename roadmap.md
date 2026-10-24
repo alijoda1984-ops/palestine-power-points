@@ -1,3 +1,4 @@
+- [ ] Add reviewed WhatsApp/copy summaries, latest-project totals, and a quick labor-only calculator; verify phone-width flows without altering saved data or publishing.
 - [x] Explain that free work resumes when credits refresh; running out does not delete the project.
 - [x] Refresh the home page and shared header for phone use; verify all five navigation actions and mobile/desktop layout without changing stored data or calculations.
 - [x] Limit current imports and new agreements to goods; legacy manufacturing remains separate. All 13 targeted tests passed; phone-width browser confirmed goods-only controls and 132 goods rows persisted after reload.

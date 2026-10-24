@@ -6,6 +6,7 @@ import { deleteProject, getCatalog, getProject, saveProject, uid, useStore } fro
 import { filterItems, sections } from "@/lib/catalog";
 import { fmt, groupBySection, laborTotal, lineTotal, totalPoints } from "@/lib/calc";
 import { MODE_DESC, MODE_LABEL, RULESET_LABEL, VERIFY_NOTE, type CatalogItem, type Project, type ProjectLine } from "@/lib/types";
+import { ProjectShare } from "@/components/ProjectShare";
 
 export const Route = createFileRoute("/projects/$id/")({
   head: () => ({
@@ -71,6 +72,7 @@ function EditorInner({ project: p }: { project: Project }) {
           <Link to="/projects/$id/edit" params={{ id: p.id }} className="btn btn-outline">تعديل البيانات</Link>
           <Link to="/projects/$id/report" params={{ id: p.id }} className="btn btn-outline">التقرير / طباعة</Link>
           <Link to="/projects/$id/agreement" params={{ id: p.id }} className="btn btn-outline">الاتفاقية</Link>
+          <ProjectShare project={p} />
         </div>
       </section>
 

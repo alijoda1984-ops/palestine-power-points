@@ -3,6 +3,9 @@ import { Shell } from "@/components/Shell";
 import { ArrowLeft, BookOpen, FileSignature, FolderOpen, HardDrive, Plus, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getProjects, useStore } from "@/lib/storage";
+import { fmt, laborTotal, totalPoints } from "@/lib/calc";
+import { MODE_LABEL } from "@/lib/types";
+import { QuickCalculator } from "@/components/QuickCalculator";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -41,6 +44,11 @@ function Index() {
       {latest && <div className="mb-6 border-b pb-5">
         <p className="mb-2 text-sm text-muted-foreground">آخر مشروع</p>
         <Button asChild variant="ghost" className="h-auto min-h-12 w-full justify-between whitespace-normal px-0 text-start text-base font-semibold"><Link to="/projects/$id" params={{ id: latest.id }}><span className="min-w-0 break-words">{latest.name}</span><ArrowLeft className="shrink-0" /></Link></Button>
+         <p className="mt-1 text-xs text-muted-foreground">{MODE_LABEL[latest.mode]}{latest.updatedAt && Number.isFinite(Date.parse(latest.updatedAt)) ? ` · آخر تعديل ${new Date(latest.updatedAt).toLocaleDateString("ar-PS")}` : ""}</p>
+         <div className="mt-3 grid grid-cols-2 gap-3">
+           <div><p className="text-xs text-muted-foreground">مجموع النقاط</p><p className="break-all text-xl font-bold">{fmt(totalPoints(latest.lines))}</p></div>
+           <div><p className="text-xs text-muted-foreground">أجرة العمل (شيكل)</p><p className="break-all text-xl font-bold text-primary">{fmt(laborTotal(latest.lines, latest.pricePerPoint))}</p></div>
+         </div>
       </div>}
       <div className="grid grid-cols-2 gap-3">
         {actions.map((a) => (
@@ -48,6 +56,7 @@ function Index() {
         ))}
       </div>
       <Button asChild variant="ghost" className="mt-3 h-16 w-full justify-between px-2 text-base [&_svg]:size-5"><Link to="/data"><span className="flex items-center gap-3"><BookOpen className="text-primary" />إدارة بيانات الكتب</span><ArrowLeft className="text-muted-foreground" /></Link></Button>
+      <QuickCalculator />
       <p className="mt-5 flex items-center justify-center gap-2 border-t pt-5 text-sm text-muted-foreground"><ShieldCheck className="size-4 shrink-0" />بياناتك محفوظة على هذا الجهاز فقط</p>
     </Shell>
   );

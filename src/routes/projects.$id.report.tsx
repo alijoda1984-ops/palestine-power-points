@@ -4,6 +4,7 @@ import { fmt, groupBySection, laborTotal, lineTotal, totalPoints } from "@/lib/c
 import { MODE_DESC, MODE_LABEL, RULESET_LABEL, VERIFY_NOTE } from "@/lib/types";
 import { Parties, PrintBar } from "@/components/PrintHeader";
 import { TestBadge } from "@/components/Shell";
+import { ProjectShare } from "@/components/ProjectShare";
 
 export const Route = createFileRoute("/projects/$id/report")({
   head: () => ({
@@ -29,6 +30,7 @@ function Report() {
   return (
     <div className="mx-auto max-w-3xl">
       <PrintBar p={p} />
+      <div className="no-print px-4 py-2"><ProjectShare project={p} /></div>
       <article className="p-4">
         <h1 className="mb-1 text-center text-2xl font-bold">كيلة الأعمال الكهربائية</h1>
         <div className="mb-4 rounded border-2 border-foreground p-2 text-center"><div className="text-lg font-bold">نوع الاتفاق: {MODE_LABEL[p.mode]}</div><div className="text-sm">{MODE_DESC[p.mode]}</div><div className="text-sm">{RULESET_LABEL[p.mode]}</div></div>

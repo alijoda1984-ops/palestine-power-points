@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { applyBackup, buildBackup, getProjects, parseBackup, saveProject } from "@/lib/storage";
 import type { Project } from "@/lib/types";
+import { approvedAgreementTerms } from "@/lib/agreement-terms";
 
 const proj = (id: string): Project => ({
   id, name: "مشروع " + id, location: "", ownerName: "", ownerPhone: "", electricianName: "", electricianPhone: "",
@@ -36,6 +37,19 @@ describe("backup", () => {
     const r = parseBackup(text);
     if (r.ok) applyBackup(r.data, "merge");
     expect(getProjects()).toHaveLength(2);
+  });
+
+  it("preserves saved approved terms and legacy manufacturing through JSON merge", () => {
+    const goods = { ...proj("goods"), agreementTerms: approvedAgreementTerms("goods", "") };
+    const legacy = { ...proj("legacy"), mode: "manufacturing" as const, agreementTerms: "شروط سابقة" };
+    saveProject(goods); saveProject(legacy);
+    const before = getProjects();
+    const parsed = parseBackup(JSON.stringify(buildBackup()));
+    if (!parsed.ok) throw new Error(parsed.error);
+    applyBackup(parsed.data, "merge");
+    expect(getProjects()).toEqual(before);
+    expect(getProjects().find(p => p.id === "goods")?.agreementTerms).toBe(goods.agreementTerms);
+    expect(getProjects().find(p => p.id === "legacy")?.mode).toBe("manufacturing");
   });
 
   it("corrupted storage reads as empty instead of crashing", () => {

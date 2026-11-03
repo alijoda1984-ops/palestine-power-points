@@ -6,6 +6,9 @@ import { fmt, laborTotal, totalPoints } from "@/lib/calc";
 import { MODE_LABEL } from "@/lib/types";
 import { Parties, PrintBar } from "@/components/PrintHeader";
 import { TestBadge } from "@/components/Shell";
+import { Button } from "@/components/ui/button";
+import { FilePlus2, Save } from "lucide-react";
+import { approvedAgreementTerms } from "@/lib/agreement-terms";
 
 export const Route = createFileRoute("/projects/$id/agreement")({
   head: () => ({
@@ -34,9 +37,10 @@ function Agreement() {
       <PrintBar p={p} />
       <div className="no-print grid gap-2 p-4">
         <label className="font-bold" htmlFor="terms">بنود الاتفاق</label>
-        <p className="text-sm text-muted-foreground">لا يضيف التطبيق أي بنود قانونية جاهزة. اكتب البنود المتفق عليها بين الطرفين، بنداً في كل سطر.</p>
+        {p.mode === "goods" && <Button variant="outline" className="min-h-12 h-auto whitespace-normal" disabled={!!terms.trim()} onClick={() => setTerms(approvedAgreementTerms(p.mode, terms))}><FilePlus2 />إدراج البنود المعتمدة</Button>}
+        <p className="text-sm text-muted-foreground">{p.mode === "goods" ? "البنود المعتمدة من صاحب التطبيق قابلة للتعديل، وليست مراجعة قانونية. لا تُستبدل البنود المكتوبة؛ راجعها ثم احفظها." : "اكتب البنود المتفق عليها بين الطرفين، بنداً في كل سطر."}</p>
         <textarea id="terms" className="field min-h-40" value={terms} onChange={(e) => setTerms(e.target.value)} />
-        <button className="btn btn-outline" onClick={() => { try { saveProject({ ...p, agreementTerms: terms }); toast.success("حُفظت البنود"); } catch (e) { toast.error((e as Error).message); } }}>حفظ البنود</button>
+        <Button variant="outline" className="min-h-12" onClick={() => { try { saveProject({ ...p, agreementTerms: terms }); toast.success("حُفظت البنود"); } catch (e) { toast.error((e as Error).message); } }}><Save />حفظ البنود</Button>
       </div>
       <article className="p-4">
         <h1 className="mb-1 text-center text-2xl font-bold">اتفاقية عمل كهربائي</h1>

@@ -1,7 +1,13 @@
 import { describe, expect, it } from "vitest";
-import { APPROVED_GOODS_TERMS, approvedAgreementTerms } from "@/lib/agreement-terms";
+import { APPROVED_GOODS_TERMS, APPROVED_PAYMENT_PERCENTAGES, APPROVED_WARRANTY_YEARS, approvedAgreementTerms } from "@/lib/agreement-terms";
 
 describe("approved agreement insertion", () => {
+  it("preserves the approved staged payments of 30%, 40%, and 20%", () => {
+    expect(APPROVED_PAYMENT_PERCENTAGES).toEqual([30, 40, 20]);
+  });
+  it("preserves the approved one-year warranty", () => {
+    expect(APPROVED_WARRANTY_YEARS).toBe(1);
+  });
   it("inserts the approved template only into an empty goods agreement", () => {
     expect(approvedAgreementTerms("goods", "")).toBe(APPROVED_GOODS_TERMS);
     expect(APPROVED_GOODS_TERMS.length).toBeGreaterThan(0);

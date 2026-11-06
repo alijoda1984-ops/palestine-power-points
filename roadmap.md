@@ -1,4 +1,4 @@
-- [ ] Add an explicit approved goods-agreement template action without replacing existing terms or changing legacy manufacturing; test saving and backup restoration.
+- [x] Add an explicit approved goods-agreement template action without replacing existing terms or changing legacy manufacturing; test saving and backup restoration.
 - [ ] Verify reviewed WhatsApp/copy summaries, latest-project totals, and the quick labor-only calculator at phone width without altering saved data or publishing.
 - [x] Explain that free work resumes when credits refresh; running out does not delete the project.
 - [x] Refresh the home page and shared header for phone use; verify all five navigation actions and mobile/desktop layout without changing stored data or calculations.
